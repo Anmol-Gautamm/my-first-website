@@ -11,30 +11,36 @@ let gravity = 0.5;
 let velocity = 0;
 const flapStrength = -8;
 
+// Ground
+const groundHeight = 100;
+const groundY = canvas.height - groundHeight;
+
 function drawBird() {
     ctx.fillStyle = "yellow";
     ctx.beginPath();
     ctx.arc(birdX, birdY, birdRadius, 0, Math.PI * 2);
     ctx.fill();
 }
-document.addEventListener("keydown", function(event) {
 
+function drawGround() {
+    ctx.fillStyle = "green";
+    ctx.fillRect(0, groundY, canvas.width, groundHeight);
+}
+
+document.addEventListener("keydown", function (event) {
     if (event.code === "Space") {
         velocity = flapStrength;
     }
-
 });
-function gameLoop() {
 
-    // Clear previous frame
+function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Apply gravity
     velocity += gravity;
     birdY += velocity;
 
-    // Draw bird
     drawBird();
+    drawGround();
 
     requestAnimationFrame(gameLoop);
 }
