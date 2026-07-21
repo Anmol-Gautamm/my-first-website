@@ -38,6 +38,10 @@ function gameLoop() {
 
     velocity += gravity;
     birdY += velocity;
+    if (birdY + birdRadius >= groundY) {
+    birdY = groundY - birdRadius;
+    velocity = 0;
+}
 
     drawBird();
     drawGround();
