@@ -9,6 +9,7 @@ let birdRadius = 20;
 // Gravity
 let gravity = 0.5;
 let velocity = 0;
+const flapStrength = -8;
 
 function drawBird() {
     ctx.fillStyle = "yellow";
@@ -16,7 +17,13 @@ function drawBird() {
     ctx.arc(birdX, birdY, birdRadius, 0, Math.PI * 2);
     ctx.fill();
 }
+document.addEventListener("keydown", function(event) {
 
+    if (event.code === "Space") {
+        velocity = flapStrength;
+    }
+
+});
 function gameLoop() {
 
     // Clear previous frame
