@@ -15,6 +15,12 @@ const flapStrength = -8;
 const groundHeight = 100;
 const groundY = canvas.height - groundHeight;
 
+// Pipe
+let pipeX = canvas.width;
+const pipeWidth = 70;
+const pipeHeight = 250;
+const pipeSpeed = 2;
+
 function drawBird() {
     ctx.fillStyle = "yellow";
     ctx.beginPath();
@@ -22,11 +28,16 @@ function drawBird() {
     ctx.fill();
 }
 
-function drawGround() {
+function drawGround()
+
+ {
     ctx.fillStyle = "green";
     ctx.fillRect(0, groundY, canvas.width, groundHeight);
 }
-
+function drawPipe() {
+    ctx.fillStyle = "green";
+    ctx.fillRect(pipeX, 0, pipeWidth, pipeHeight);
+}
 document.addEventListener("keydown", function (event) {
     if (event.code === "Space") {
         velocity = flapStrength;
@@ -38,13 +49,16 @@ function gameLoop() {
 
     velocity += gravity;
     birdY += velocity;
+    pipeX -= pipeSpeed;
     if (birdY + birdRadius >= groundY) {
     birdY = groundY - birdRadius;
     velocity = 0;
 }
 
     drawBird();
+    drawPipe();
     drawGround();
+    
 
     requestAnimationFrame(gameLoop);
 }
