@@ -18,7 +18,7 @@ const groundY = canvas.height - groundHeight;
 // Pipe
 let pipeX = canvas.width;
 const pipeWidth = 70;
-const pipeHeight = 250;
+let pipeHeight = 250;
 const pipeSpeed = 2;
 const pipeGap = 180;
 
@@ -64,6 +64,7 @@ function gameLoop() {
     pipeX -= pipeSpeed;
     if (pipeX + pipeWidth < 0) {
     pipeX = canvas.width;
+        pipeHeight = Math.floor(Math.random() * 250) + 100;
 }
     if (birdY + birdRadius >= groundY) {
     birdY = groundY - birdRadius;
