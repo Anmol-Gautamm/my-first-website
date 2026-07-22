@@ -50,6 +50,9 @@ function gameLoop() {
     velocity += gravity;
     birdY += velocity;
     pipeX -= pipeSpeed;
+    if (pipeX + pipeWidth < 0) {
+    pipeX = canvas.width;
+}
     if (birdY + birdRadius >= groundY) {
     birdY = groundY - birdRadius;
     velocity = 0;
