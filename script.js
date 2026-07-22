@@ -20,6 +20,8 @@ let pipeX = canvas.width;
 const pipeWidth = 70;
 const pipeHeight = 250;
 const pipeSpeed = 2;
+const pipeGap = 180;
+
 
 function drawBird() {
     ctx.fillStyle = "yellow";
@@ -36,7 +38,17 @@ function drawGround()
 }
 function drawPipe() {
     ctx.fillStyle = "green";
+
+    // Top pipe
     ctx.fillRect(pipeX, 0, pipeWidth, pipeHeight);
+
+    // Bottom pipe
+    ctx.fillRect(
+        pipeX,
+        pipeHeight + pipeGap,
+        pipeWidth,
+        canvas.height - (pipeHeight + pipeGap) - groundHeight
+    );
 }
 document.addEventListener("keydown", function (event) {
     if (event.code === "Space") {
