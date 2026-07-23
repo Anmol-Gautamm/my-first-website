@@ -74,11 +74,30 @@ function checkCollision() {
     }
 }
 
+function restartGame() {
+    birdY = 200;
+    velocity = 0;
+
+    pipeX = canvas.width;
+    pipeHeight = 250;
+
+    gameOver = false;
+
+    gameLoop();
+}
+
 document.addEventListener("keydown", function (event) {
+
     if (event.code === "Space") {
         velocity = flapStrength;
     }
+
+    if (event.code === "KeyR" && gameOver) {
+        restartGame();
+    }
+
 });
+    
 
 function gameLoop() {
 
