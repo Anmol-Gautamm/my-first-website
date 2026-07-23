@@ -1,6 +1,9 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+//score 
+let score = 0;
+let scored = false;
 // Bird properties
 let birdX = 100;
 let birdY = 200;
@@ -93,7 +96,9 @@ document.addEventListener("keydown", function (event) {
     }
 
     if (event.code === "KeyR" && gameOver) {
-        restartGame();
+        restartGame(); 
+        score = 0;
+   scored = false;
     }
 
 });
@@ -110,9 +115,15 @@ if (gameOver) {
     velocity += gravity;
     birdY += velocity;
     pipeX -= pipeSpeed;
+    if (!scored && pipeX + pipeWidth < birdX) {
+    score++;
+    scored = true;
+    console.log("Score:", score);
+}
     if (pipeX + pipeWidth < 0) {
     pipeX = canvas.width;
-        pipeHeight = Math.floor(Math.random() * 250) + 100;
+    pipeHeight = Math.floor(Math.random() * 250) + 100;
+    scored = false;
 }
     if (birdY + birdRadius >= groundY) {
     birdY = groundY - birdRadius;
