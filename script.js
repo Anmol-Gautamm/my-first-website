@@ -22,6 +22,8 @@ let pipeHeight = 250;
 const pipeSpeed = 2;
 const pipeGap = 180;
 
+let gameOver = false;
+
 
 function drawBird() {
     ctx.fillStyle = "yellow";
@@ -50,6 +52,28 @@ function drawPipe() {
         canvas.height - (pipeHeight + pipeGap) - groundHeight
     );
 }
+
+function checkCollision() {
+
+    // Bird hits top pipe
+    if (
+        birdX + birdRadius > pipeX &&
+        birdX - birdRadius < pipeX + pipeWidth &&
+        birdY - birdRadius < pipeHeight
+    ) {
+        gameOver = true;
+    }
+
+    // Bird hits bottom pipe
+    if (
+        birdX + birdRadius > pipeX &&
+        birdX - birdRadius < pipeX + pipeWidth &&
+        birdY + birdRadius > pipeHeight + pipeGap
+    ) {
+        gameOver = true;
+    }
+}
+
 document.addEventListener("keydown", function (event) {
     if (event.code === "Space") {
         velocity = flapStrength;
@@ -57,6 +81,11 @@ document.addEventListener("keydown", function (event) {
 });
 
 function gameLoop() {
+
+if (gameOver) {
+    return;
+}
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     velocity += gravity;
@@ -73,6 +102,7 @@ function gameLoop() {
 
     drawBird();
     drawPipe();
+    checkCollision();
     drawGround();
     
 
