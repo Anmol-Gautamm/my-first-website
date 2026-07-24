@@ -46,7 +46,15 @@ function drawScore() {
     ctx.font = "30px Arial";
     ctx.fillText("Score: " + score, 20, 40);
 }
+function drawGameOver() {
+    ctx.fillStyle = "red";
+    ctx.font = "40px Arial";
+    ctx.fillText("GAME OVER", 85, 250);
 
+    ctx.fillStyle = "white";
+    ctx.font = "20px Arial";
+    ctx.fillText("Press R to Restart", 105, 290);
+}
 function drawPipe() {
     ctx.fillStyle = "green";
 
@@ -113,6 +121,7 @@ document.addEventListener("keydown", function (event) {
 function gameLoop() {
 
 if (gameOver) {
+    drawGameOver();
     return;
 }
 
