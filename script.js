@@ -41,6 +41,12 @@ function drawGround()
     ctx.fillStyle = "green";
     ctx.fillRect(0, groundY, canvas.width, groundHeight);
 }
+function drawScore() {
+    ctx.fillStyle = "white";
+    ctx.font = "30px Arial";
+    ctx.fillText("Score: " + score, 20, 40);
+}
+
 function drawPipe() {
     ctx.fillStyle = "green";
 
@@ -134,6 +140,7 @@ if (gameOver) {
     drawPipe();
     checkCollision();
     drawGround();
+    drawScore();
     
 
     requestAnimationFrame(gameLoop);
