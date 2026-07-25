@@ -107,7 +107,7 @@ function restartGame() {
     gameLoop();
 
 
-document.addEventListener("keydown", function (event) {
+document.addEventListener("keydown", function (event) { 
 
     if (event.code === "Space") {
         velocity = flapStrength;
