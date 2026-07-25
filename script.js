@@ -104,6 +104,11 @@ function restartGame() {
     gameOver = false;
 }
 
+function drawBackground() {
+    ctx.fillStyle = "#87CEEB";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
     gameLoop();
 
 
@@ -132,6 +137,8 @@ if (gameOver) {
 }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawBackground();
 
     velocity += gravity;
     birdY += velocity;
