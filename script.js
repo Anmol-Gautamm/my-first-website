@@ -98,10 +98,14 @@ function restartGame() {
     pipeX = canvas.width;
     pipeHeight = 250;
 
+    score = 0;
+    scored = false;
+
     gameOver = false;
+}
 
     gameLoop();
-}
+
 
 document.addEventListener("keydown", function (event) {
 
@@ -109,8 +113,10 @@ document.addEventListener("keydown", function (event) {
         velocity = flapStrength;
     }
 
-    if (event.code === "KeyR" && gameOver) {
-        restartGame(); 
+  if (event.code === "KeyR" && gameOver) {
+    restartGame();
+    requestAnimationFrame(gameLoop);
+
         score = 0;
    scored = false;
     }
