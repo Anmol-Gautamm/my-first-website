@@ -2,6 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 //score 
+let highScore = 0;
 let score = 0;
 let scored = false;
 // Bird properties
@@ -70,9 +71,10 @@ function drawGround()
     ctx.fillRect(0, groundY, canvas.width, groundHeight);
 }
 function drawScore() {
-    ctx.fillStyle = "white";
-    ctx.font = "30px Arial";
-    ctx.fillText("Score: " + score, 20, 40);
+   ctx.fillStyle = "white";
+ctx.font = "30px Arial";
+ctx.fillText("Score: " + score, 20, 40);
+ctx.fillText("Best: " + highScore, 20, 80);
 }
 function drawGameOver() {
     ctx.fillStyle = "red";
@@ -173,6 +175,9 @@ if (gameOver) {
     pipeX -= pipeSpeed;
     if (!scored && pipeX + pipeWidth < birdX) {
     score++;
+    if (score > highScore) {
+    highScore = score;
+}
     scored = true;
     console.log("Score:", score);
 }
