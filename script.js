@@ -30,11 +30,17 @@ let gameOver = false;
 
 function drawBird() {
     // Body
-    ctx.fillStyle = "yellow";
-    ctx.beginPath();
-    ctx.arc(birdX, birdY, birdRadius, 0, Math.PI * 2);
-    ctx.fill();
+ctx.save();
 
+if (velocity < 0) {
+    ctx.translate(birdX, birdY);
+    ctx.rotate(-0.3);
+    ctx.translate(-birdX, -birdY);
+} else {
+    ctx.translate(birdX, birdY);
+    ctx.rotate(0.3);
+    ctx.translate(-birdX, -birdY);
+}
     // Eye
     ctx.fillStyle = "white";
     ctx.beginPath();
@@ -54,6 +60,7 @@ function drawBird() {
     ctx.lineTo(birdX + birdRadius + 12, birdY + 4);
     ctx.closePath();
     ctx.fill();
+    ctx.restore();
 }
 
 function drawGround()
