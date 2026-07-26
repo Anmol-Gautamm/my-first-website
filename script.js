@@ -30,37 +30,44 @@ let gameOver = false;
 
 
 function drawBird() {
-    // Body
-ctx.save();
+    ctx.save();
 
-if (velocity < 0) {
+    // Rotate bird based on movement
     ctx.translate(birdX, birdY);
-    ctx.rotate(-0.3);
-    ctx.translate(-birdX, -birdY);
-} else {
-    ctx.translate(birdX, birdY);
-    ctx.rotate(0.3);
-    ctx.translate(-birdX, -birdY);
-}
+
+    if (velocity < 0) {
+        ctx.rotate(-0.3);
+    } else {
+        ctx.rotate(0.3);
+    }
+
+    // Body
+    ctx.fillStyle = "yellow";
+    ctx.beginPath();
+    ctx.arc(0, 0, birdRadius, 0, Math.PI * 2);
+    ctx.fill();
+
     // Eye
     ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.arc(birdX + 6, birdY - 5, 5, 0, Math.PI * 2);
+    ctx.arc(6, -5, 5, 0, Math.PI * 2);
     ctx.fill();
 
+    // Pupil
     ctx.fillStyle = "black";
     ctx.beginPath();
-    ctx.arc(birdX + 7, birdY - 5, 2, 0, Math.PI * 2);
+    ctx.arc(7, -5, 2, 0, Math.PI * 2);
     ctx.fill();
 
     // Beak
     ctx.fillStyle = "orange";
     ctx.beginPath();
-    ctx.moveTo(birdX + birdRadius, birdY);
-    ctx.lineTo(birdX + birdRadius + 12, birdY - 4);
-    ctx.lineTo(birdX + birdRadius + 12, birdY + 4);
+    ctx.moveTo(birdRadius, 0);
+    ctx.lineTo(birdRadius + 12, -4);
+    ctx.lineTo(birdRadius + 12, 4);
     ctx.closePath();
     ctx.fill();
+
     ctx.restore();
 }
 
