@@ -46,7 +46,9 @@ function drawBird() {
     ctx.beginPath();
     ctx.arc(0, 0, birdRadius, 0, Math.PI * 2);
     ctx.fill();
-
+ctx.strokeStyle = "black";
+ctx.lineWidth = 2;
+ctx.stroke();
     // Eye
     ctx.fillStyle = "white";
     ctx.beginPath();
