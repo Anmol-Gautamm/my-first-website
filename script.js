@@ -93,10 +93,18 @@ function drawGameOver() {
     ctx.fillText("Press R to Restart", 105, 290);
 }
 function drawPipe() {
-    ctx.fillStyle = "green";
+    ctx.fillStyle = "#228B22";
 
     // Top pipe
     ctx.fillRect(pipeX, 0, pipeWidth, pipeHeight);
+
+    // Top pipe cap
+    ctx.fillRect(
+        pipeX - 5,
+        pipeHeight - 20,
+        pipeWidth + 10,
+        20
+    );
 
     // Bottom pipe
     ctx.fillRect(
@@ -105,8 +113,15 @@ function drawPipe() {
         pipeWidth,
         canvas.height - (pipeHeight + pipeGap) - groundHeight
     );
-}
 
+    // Bottom pipe cap
+    ctx.fillRect(
+        pipeX - 5,
+        pipeHeight + pipeGap,
+        pipeWidth + 10,
+        20
+    );
+}
 function checkCollision() {
 
     // Bird hits top pipe
