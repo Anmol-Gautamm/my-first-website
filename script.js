@@ -63,9 +63,12 @@ ctx.stroke();
     // Pupil
     ctx.fillStyle = "black";
     ctx.beginPath();
-    ctx.arc(7, -5, 2, 0, Math.PI * 2);
+    ctx.arc(8, -5, 1.5, 0, Math.PI * 2);
     ctx.fill();
-
+ctx.fillStyle = "white";
+ctx.beginPath();
+ctx.arc(7.3, -5.8, 0.6, 0, Math.PI * 2);
+ctx.fill();
     // Beak
     ctx.fillStyle = "orange";
     ctx.beginPath();
