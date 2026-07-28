@@ -49,6 +49,11 @@ function drawBird() {
 ctx.strokeStyle = "black";
 ctx.lineWidth = 2;
 ctx.stroke();
+    // Wing
+    ctx.fillStyle = "#FFD700";
+    ctx.beginPath();
+    ctx.ellipse(-5, 3, 8, 5, -0.4, 0, Math.PI * 2);
+    ctx.fill();
     // Eye
     ctx.fillStyle = "white";
     ctx.beginPath();
