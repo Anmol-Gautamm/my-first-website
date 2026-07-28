@@ -81,6 +81,16 @@ ctx.fill();
     ctx.restore();
 }
 
+function drawCloud(x, y) {
+    ctx.fillStyle = "white";
+
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, Math.PI * 2);
+    ctx.arc(x + 20, y - 10, 18, 0, Math.PI * 2);
+    ctx.arc(x + 40, y, 20, 0, Math.PI * 2);
+    ctx.fill();
+}
+
 function drawGround()
 
  {
@@ -169,6 +179,8 @@ function restartGame() {
 function drawBackground() {
     ctx.fillStyle = "#87CEEB";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawCloud(80, 80);
+drawCloud(280, 140);
 }
 
     gameLoop();
@@ -199,6 +211,8 @@ if (gameOver) {
 }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
 
     drawBackground();
 
