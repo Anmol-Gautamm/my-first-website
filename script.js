@@ -79,7 +79,10 @@ ctx.beginPath();
 ctx.arc(7.3, -5.8, 0.6, 0, Math.PI * 2);
 ctx.fill();
     // Beak
-    ctx.fillStyle = "orange";
+   ctx.fillStyle = "#FF8C00";
+   ctx.strokeStyle = "#B85C00";
+ctx.lineWidth = 1;
+ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(birdRadius, 0);
     ctx.lineTo(birdRadius + 12, -4);
