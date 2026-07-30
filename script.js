@@ -19,6 +19,7 @@ const flapStrength = -8;
 const groundHeight = 100;
 const groundY = canvas.height - groundHeight;
 let cloudX = 0;
+let groundOffset = 0;
 
 // Pipe
 let pipeX = canvas.width;
@@ -92,17 +93,25 @@ function drawCloud(x, y) {
     ctx.fill();
 }
 
-function drawGround()
-
- {
+function drawGround() {
     ctx.fillStyle = "green";
     ctx.fillRect(0, groundY, canvas.width, groundHeight);
+
+    ctx.strokeStyle = "#145214";
+    ctx.lineWidth = 2;
+
+    for (let i = -groundOffset; i < canvas.width; i += 30) {
+        ctx.beginPath();
+        ctx.moveTo(i, groundY);
+        ctx.lineTo(i + 15, groundY + 15);
+        ctx.stroke();
+    }
 }
 function drawScore() {
-   ctx.fillStyle = "white";
-ctx.font = "30px Arial";
-ctx.fillText("Score: " + score, 20, 40);
-ctx.fillText("Best: " + highScore, 20, 80);
+    ctx.fillStyle = "white";
+    ctx.font = "30px Arial";
+    ctx.fillText("Score: " + score, 20, 40);
+    ctx.fillText("Best: " + highScore, 20, 80);
 }
 function drawGameOver() {
     ctx.fillStyle = "red";
@@ -220,6 +229,11 @@ if (gameOver) {
     velocity += gravity;
     birdY += velocity;
     pipeX -= pipeSpeed;
+    groundOffset += 2;
+
+if (groundOffset >= 30) {
+    groundOffset = 0;
+}
     cloudX -= 0.3;
 
 if (cloudX < -400) {
