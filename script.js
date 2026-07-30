@@ -227,6 +227,10 @@ function gameLoop() {
 
 if (gameOver) {
     drawGameOver();
+    ctx.shadowColor = "black";
+ctx.shadowBlur = 0;
+ctx.shadowOffsetX = 0;
+ctx.shadowOffsetY = 0;
     return;
 }
 
