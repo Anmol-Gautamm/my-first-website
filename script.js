@@ -192,8 +192,7 @@ function drawBackground() {
   drawCloud(80 + cloudX, 80);
 drawCloud(280 + cloudX, 140);
 }
-
-    gameLoop();
+Loop();
 
 
 document.addEventListener("keydown", function (event) { 
