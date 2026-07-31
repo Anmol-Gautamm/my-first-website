@@ -65,6 +65,14 @@ ctx.lineTo(-birdRadius - 10, -8);
 ctx.lineTo(-birdRadius - 10, 4);
 ctx.closePath();
 ctx.fill();
+// Tail
+ctx.fillStyle = "#FFD700";
+ctx.beginPath();
+ctx.moveTo(-birdRadius, 0);
+ctx.lineTo(-birdRadius - 10, -6);
+ctx.lineTo(-birdRadius - 10, 6);
+ctx.closePath();
+ctx.fill();
     // Eye
     ctx.fillStyle = "white";
     ctx.beginPath();
