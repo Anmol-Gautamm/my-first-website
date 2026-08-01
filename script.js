@@ -144,9 +144,12 @@ function drawGameOver() {
 }
 function drawPipe() {
     ctx.fillStyle = "#228B22";
+    ctx.strokeStyle = "#145214";
+ctx.lineWidth = 3;
 
     // Top pipe
     ctx.fillRect(pipeX, 0, pipeWidth, pipeHeight);
+    ctx.strokeRect(pipeX, 0, pipeWidth, pipeHeight);
 
     // Top pipe cap
     ctx.fillRect(
@@ -155,6 +158,7 @@ function drawPipe() {
         pipeWidth + 10,
         20
     );
+    ctx.strokeRect(pipeX - 5, pipeHeight - 20, pipeWidth + 10, 20);
 
     // Bottom pipe
     ctx.fillRect(
@@ -163,7 +167,12 @@ function drawPipe() {
         pipeWidth,
         canvas.height - (pipeHeight + pipeGap) - groundHeight
     );
-
+ctx.strokeRect(
+    pipeX,
+    pipeHeight + pipeGap,
+    pipeWidth,
+    canvas.height - (pipeHeight + pipeGap) - groundHeight
+);
     // Bottom pipe cap
     ctx.fillRect(
         pipeX - 5,
@@ -171,6 +180,12 @@ function drawPipe() {
         pipeWidth + 10,
         20
     );
+    ctx.strokeRect(
+    pipeX - 5,
+    pipeHeight + pipeGap,
+    pipeWidth + 10,
+    20
+);
 }
 function checkCollision() {
 
