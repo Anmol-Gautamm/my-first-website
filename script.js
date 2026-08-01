@@ -52,10 +52,12 @@ ctx.strokeStyle = "black";
 ctx.lineWidth = 2;
 ctx.stroke();
     // Wing
-    ctx.fillStyle = "#FFD700";
-    ctx.beginPath();
-    ctx.ellipse(-5, 3, 8, 5, -0.4, 0, Math.PI * 2);
-    ctx.fill();
+  let wingY = velocity < 0 ? -2 : 4;
+
+ctx.fillStyle = "#FFD700";
+ctx.beginPath();
+ctx.ellipse(-5, wingY, 8, 5, -0.4, 0, Math.PI * 2);
+ctx.fill();
     ctx.fillStyle = "#FFD700";
 ctx.beginPath();
 ctx.moveTo(-birdRadius, -2);
@@ -228,9 +230,9 @@ function gameLoop() {
 if (gameOver) {
     drawGameOver();
     ctx.shadowColor = "black";
-ctx.shadowBlur = 0;
-ctx.shadowOffsetX = 0;
-ctx.shadowOffsetY = 0;
+ctx.shadowBlur = 8;
+ctx.shadowOffsetX = 2;
+ctx.shadowOffsetY = 2;
     return;
 }
 
