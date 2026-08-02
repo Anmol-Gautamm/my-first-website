@@ -29,6 +29,7 @@ const pipeSpeed = 2;
 const pipeGap = 180;
 
 let gameOver = false;
+let gameStarted = false;
 
 
 function drawBird() {
@@ -233,9 +234,14 @@ drawCloud(280 + cloudX, 140);
 
 document.addEventListener("keydown", function (event) { 
 
-    if (event.code === "Space") {
-        velocity = flapStrength;
+   if (event.code === "Space") {
+
+    if (!gameStarted) {
+        gameStarted = true;
     }
+
+    velocity = flapStrength;
+}
 
   if (event.code === "KeyR" && gameOver) {
     restartGame();
@@ -249,7 +255,18 @@ document.addEventListener("keydown", function (event) {
     
 
 function gameLoop() {
+if (!gameStarted) {
+    drawBackground();
+    drawBird();
+    drawGround();
 
+    ctx.fillStyle = "white";
+    ctx.font = "30px Arial";
+    ctx.fillText("Press SPACE to Start", 45, 250);
+
+    requestAnimationFrame(gameLoop);
+    return;
+}
 if (gameOver) {
     drawGameOver();
     ctx.shadowColor = "black";
