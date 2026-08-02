@@ -5,12 +5,14 @@
 }
 
 body {
+    min-height: 100vh;
     background: #70c5ce;
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: Arial, sans-serif;
-    padding-top: 20px;
+    justify-content: flex-start;
+    padding: 20px;
+    overflow-x: hidden;
 }
 
 h1 {
@@ -18,6 +20,8 @@ h1 {
 }
 
 canvas {
+    width: 400px;
+    height: 600px;
     background: #87CEEB;
     border: 4px solid black;
 }
