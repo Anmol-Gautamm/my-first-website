@@ -135,13 +135,29 @@ function drawScore() {
     ctx.fillText("Best: " + highScore, 20, 80);
 }
 function drawGameOver() {
-    ctx.fillStyle = "red";
-    ctx.font = "40px Arial";
-    ctx.fillText("GAME OVER", 85, 250);
 
+    // Dark overlay
+    ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Game Over
+    ctx.fillStyle = "red";
+    ctx.font = "42px Arial";
+    ctx.fillText("GAME OVER", 55, 200);
+
+    // Score
+    ctx.fillStyle = "yellow";
+    ctx.font = "28px Arial";
+    ctx.fillText("Score: " + score, 135, 255);
+
+    // Best
     ctx.fillStyle = "white";
-    ctx.font = "20px Arial";
-    ctx.fillText("Press R to Restart", 105, 290);
+    ctx.font = "24px Arial";
+    ctx.fillText("Best: " + highScore, 135, 295);
+
+    // Restart
+    ctx.font = "22px Arial";
+    ctx.fillText("Press R to Restart", 80, 345);
 }
 function drawPipe() {
     ctx.fillStyle = "#228B22";
@@ -220,6 +236,7 @@ function restartGame() {
     scored = false;
 
     gameOver = false;
+    gameStarted = false;
 }
 
 function drawBackground() {
@@ -228,8 +245,6 @@ function drawBackground() {
   drawCloud(80 + cloudX, 80);
 drawCloud(280 + cloudX, 140);
 }
-
-    gameLoop();
 
 
 document.addEventListener("keydown", function (event) { 
@@ -268,11 +283,13 @@ if (!gameStarted) {
     return;
 }
 if (gameOver) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawBackground();
+    drawPipe();
+    drawGround();
     drawGameOver();
-    ctx.shadowColor = "black";
-ctx.shadowBlur = 8;
-ctx.shadowOffsetX = 2;
-ctx.shadowOffsetY = 2;
+
     return;
 }
 
