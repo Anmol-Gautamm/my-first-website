@@ -365,6 +365,7 @@ function spawnPipe(xPos) {
         baseTopHeight: topHeight,
         topHeight: topHeight,
         currentGap: currentGap,
+        
         bottomY: topHeight + currentGap,
         isMoving: isMoving,
         moveAmplitude: moveAmplitude,
