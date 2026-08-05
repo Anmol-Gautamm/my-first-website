@@ -96,7 +96,7 @@ function playFlapSound() {
         gain.connect(audioCtx.destination);
         osc.start(now);
         osc.stop(now + 0.09);
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function playScoreSound() {
@@ -119,7 +119,7 @@ function playScoreSound() {
         osc1.stop(now + 0.12);
         osc2.start(now + 0.07);
         osc2.stop(now + 0.25);
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function playHitSound() {
@@ -137,7 +137,7 @@ function playHitSound() {
         gain.connect(audioCtx.destination);
         osc.start(now);
         osc.stop(now + 0.22);
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function playPowerupSound() {
@@ -155,7 +155,7 @@ function playPowerupSound() {
         gain.connect(audioCtx.destination);
         osc.start(now);
         osc.stop(now + 0.22);
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function playShieldBreakSound() {
@@ -173,7 +173,7 @@ function playShieldBreakSound() {
         gain.connect(audioCtx.destination);
         osc.start(now);
         osc.stop(now + 0.15);
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function playSelectSound() {
@@ -191,7 +191,7 @@ function playSelectSound() {
         gain.connect(audioCtx.destination);
         osc.start(now);
         osc.stop(now + 0.08);
-    } catch (e) {}
+    } catch (e) { }
 }
 
 // --- SCORES & PERSISTENCE ---
@@ -227,6 +227,7 @@ let cityOffset = 0;
 
 // --- SCREEN SHAKE & PARTICLES ---
 let shakeTime = 0;
+let gameOverCooldown = 0;
 let particles = [];
 
 // --- CLOUD DATA ---
@@ -310,11 +311,13 @@ function flap() {
     if (gameState === STATE_PLAYING) {
         velocity = config.flapStrength;
         playFlapSound();
-        createParticles(birdX - 12, birdY + 8, "rgba(255, 255, 255, 0.7)", 5);
+        createParticles(birdX - 12, birdY + 8, "rgba(255, 255, 255, 0.8)", 6, 1.2);
+        createParticles(birdX - 15, birdY + 2, "#ffe600", 3, 0.8);
         return;
     }
 
     if (gameState === STATE_GAMEOVER) {
+        if (gameOverCooldown > 0) return; // Prevent accidental instant restart during flap tapping!
         resetGame();
         gameState = STATE_PLAYING;
         velocity = config.flapStrength;
@@ -334,6 +337,7 @@ function resetGame() {
     slowMoTime = 0;
     doubleScoreTime = 0;
     shakeTime = 0;
+    gameOverCooldown = 0;
     particles = [];
     pipes = [];
     spawnPipe(canvas.width + 100);
@@ -365,7 +369,7 @@ function spawnPipe(xPos) {
         baseTopHeight: topHeight,
         topHeight: topHeight,
         currentGap: currentGap,
-        
+
         bottomY: topHeight + currentGap,
         isMoving: isMoving,
         moveAmplitude: moveAmplitude,
@@ -425,7 +429,7 @@ function updatePipes() {
                 createParticles(birdX, birdY, "#00f0ff", 20, 2);
                 p.passed = true;
             } else {
-                
+                triggerGameOver();
                 return;
             }
         }
@@ -463,19 +467,34 @@ function updatePipes() {
     }
 }
 
+function circleRectIntersect(cx, cy, r, rx, ry, rw, rh) {
+    const closestX = Math.max(rx, Math.min(cx, rx + rw));
+    const closestY = Math.max(ry, Math.min(cy, ry + rh));
+    const distX = cx - closestX;
+    const distY = cy - closestY;
+    return (distX * distX + distY * distY) < (r * r);
+}
+
 function checkPipeCollision(p) {
-    if (birdX + birdRadius > p.x && birdX - birdRadius < p.x + pipeWidth) {
-        if (birdY - birdRadius < p.topHeight || birdY + birdRadius > p.bottomY) {
-            return true;
-        }
-    }
+    // 1. Top pipe stem
+    if (circleRectIntersect(birdX, birdY, birdRadius, p.x, 0, pipeWidth, Math.max(0, p.topHeight - 24))) return true;
+    // 2. Top pipe cap (overhangs 5px on each side)
+    if (circleRectIntersect(birdX, birdY, birdRadius, p.x - 5, p.topHeight - 24, pipeWidth + 10, 24)) return true;
+    // 3. Bottom pipe cap (overhangs 5px on each side)
+    if (circleRectIntersect(birdX, birdY, birdRadius, p.x - 5, p.bottomY, pipeWidth + 10, 24)) return true;
+    // 4. Bottom pipe stem
+    if (circleRectIntersect(birdX, birdY, birdRadius, p.x, p.bottomY + 24, pipeWidth, Math.max(0, groundY - (p.bottomY + 24)))) return true;
+
     return false;
 }
 
 function triggerGameOver() {
+    if (gameState === STATE_GAMEOVER) return;
     shakeTime = 20;
+    gameOverCooldown = 25;
     playHitSound();
-    createParticles(birdX, birdY, "#ff0055", 25, 2.5);
+    createParticles(birdX, birdY, "#ff0055", 30, 2.8);
+    createParticles(birdX, birdY, "#ffe600", 15, 1.8);
     gameState = STATE_GAMEOVER;
 }
 
@@ -484,11 +503,11 @@ function triggerGameOver() {
 function drawBackgroundSky() {
     const timeShift = Math.min(1, score / 40);
     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    
+
     const r1 = Math.round(112 * (1 - timeShift) + 245 * timeShift);
     const g1 = Math.round(197 * (1 - timeShift) + 120 * timeShift);
     const b1 = Math.round(206 * (1 - timeShift) + 130 * timeShift);
-    
+
     grad.addColorStop(0, `rgb(${r1}, ${g1}, ${b1})`);
     grad.addColorStop(1, "#cce7ee");
 
@@ -624,23 +643,55 @@ function drawBird() {
     ctx.save();
     ctx.translate(birdX, birdY);
 
-    birdAngle = Math.max(-0.4, Math.min(1.2, velocity * 0.08));
+    birdAngle = Math.max(-0.45, Math.min(1.25, velocity * 0.085));
     ctx.rotate(birdAngle);
 
+    // 1. Active Shield Outer Aura
     if (hasShield) {
         ctx.beginPath();
-        ctx.arc(0, 0, birdRadius + 8, 0, Math.PI * 2);
+        ctx.arc(0, 0, birdRadius + 9, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(0, 240, 255, 0.35)";
         ctx.fill();
         ctx.strokeStyle = "#00f0ff";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.stroke();
     }
 
-    const birdGrad = ctx.createRadialGradient(-3, -3, 2, 0, 0, birdRadius);
-    birdGrad.addColorStop(0, "#fff066");
+    // 2. Multi-Layered Tail Feathers (Back)
+    ctx.fillStyle = "#ff8c00";
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 2;
+    // Top tail feather
+    ctx.beginPath();
+    ctx.moveTo(-birdRadius + 2, -2);
+    ctx.lineTo(-birdRadius - 10, -10);
+    ctx.lineTo(-birdRadius - 6, -1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Middle tail feather
+    ctx.beginPath();
+    ctx.moveTo(-birdRadius + 2, 0);
+    ctx.lineTo(-birdRadius - 12, -2);
+    ctx.lineTo(-birdRadius - 6, 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Bottom tail feather
+    ctx.beginPath();
+    ctx.moveTo(-birdRadius + 2, 2);
+    ctx.lineTo(-birdRadius - 9, 7);
+    ctx.lineTo(-birdRadius - 4, 7);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 3. Main Spherical Bird Body
+    const birdGrad = ctx.createRadialGradient(-4, -5, 2, 0, 0, birdRadius);
+    birdGrad.addColorStop(0, "#ffffff");
+    birdGrad.addColorStop(0.2, "#fff066");
     birdGrad.addColorStop(0.7, "#ffd700");
-    birdGrad.addColorStop(1, "#e69d00");
+    birdGrad.addColorStop(1, "#e68a00");
 
     ctx.fillStyle = birdGrad;
     ctx.strokeStyle = "#000000";
@@ -651,50 +702,86 @@ function drawBird() {
     ctx.fill();
     ctx.stroke();
 
-    const wingY = Math.sin(wingFrame) * 6;
-    ctx.fillStyle = "#ffae00";
+    // 4. Cute Rosy Blush Cheek
+    ctx.fillStyle = "rgba(255, 80, 110, 0.55)";
     ctx.beginPath();
-    ctx.ellipse(-6, wingY, 8, 5, -0.2, 0, Math.PI * 2);
+    ctx.arc(4, 5, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 5. Large Arcade Eye
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(6, -6, 6.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = "#e69d00";
+    // Eye Pupil
+    ctx.fillStyle = "#000000";
     ctx.beginPath();
-    ctx.moveTo(-birdRadius, 0);
-    ctx.lineTo(-birdRadius - 8, -6);
-    ctx.lineTo(-birdRadius - 8, 6);
+    ctx.arc(7.5, -6, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Eye Highlights (Catchlights)
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(6.5, -7.5, 1.2, 0, Math.PI * 2);
+    ctx.arc(8.5, -5.0, 0.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 6. Split Upper & Lower Beak
+    const beakGrad = ctx.createLinearGradient(birdRadius - 2, 0, birdRadius + 14, 0);
+    beakGrad.addColorStop(0, "#ff8800");
+    beakGrad.addColorStop(1, "#ff2200");
+
+    ctx.fillStyle = beakGrad;
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 2;
+    // Upper Beak
+    ctx.beginPath();
+    ctx.moveTo(birdRadius - 2, -4);
+    ctx.lineTo(birdRadius + 13, 0);
+    ctx.lineTo(birdRadius - 2, 2);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-
-    ctx.fillStyle = "#ffffff";
+    // Lower Beak
     ctx.beginPath();
-    ctx.arc(6, -5, 6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = "#000000";
-    ctx.beginPath();
-    ctx.arc(8, -5, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#ffffff";
-    ctx.beginPath();
-    ctx.arc(7, -7, 1, 0, Math.PI * 2);
-    ctx.fill();
-
-    const beakGrad = ctx.createLinearGradient(birdRadius - 2, 0, birdRadius + 12, 0);
-    beakGrad.addColorStop(0, "#ff7700");
-    beakGrad.addColorStop(1, "#ff3300");
-
-    ctx.fillStyle = beakGrad;
-    ctx.beginPath();
-    ctx.moveTo(birdRadius - 2, -3);
-    ctx.lineTo(birdRadius + 11, 1);
+    ctx.moveTo(birdRadius - 2, 1);
+    ctx.lineTo(birdRadius + 10, 3);
     ctx.lineTo(birdRadius - 2, 6);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+
+    // 7. Dynamic Animated Wing
+    const wingAngle = Math.sin(wingFrame) * 0.5;
+    ctx.save();
+    ctx.translate(-4, 2);
+    ctx.rotate(wingAngle);
+
+    const wingGrad = ctx.createLinearGradient(-10, -5, 6, 8);
+    wingGrad.addColorStop(0, "#ffffff");
+    wingGrad.addColorStop(0.4, "#ffc400");
+    wingGrad.addColorStop(1, "#e67300");
+
+    ctx.fillStyle = wingGrad;
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(-2, 0, 9, 6, 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Inner wing highlight curve
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(-2, -1, 5, 0.2, Math.PI * 0.8);
+    ctx.stroke();
+
+    ctx.restore();
 
     ctx.restore();
 }
@@ -803,7 +890,7 @@ function drawGameOverScreen() {
     const cardW = 340;
     const cardH = 290;
     const cardX = (canvas.width - cardW) / 2;
-    const cardY = (canvas.height - cardH) / 2 - 10;
+    const cardY = (canvas.height - cardH) / 2 - 50;
 
     ctx.save();
 
@@ -886,6 +973,9 @@ function gameLoop() {
         ctx.translate(shakeX, shakeY);
         shakeTime--;
     }
+    if (gameOverCooldown > 0) {
+        gameOverCooldown--;
+    }
 
     const config = DIFFICULTY_CONFIG[currentDifficulty];
     const speedMult = slowMoTime > 0 ? 0.6 : 1.0;
@@ -947,21 +1037,21 @@ function gameLoop() {
 
 // Attach Difficulty Button & Overlay Listeners
 if (difficultyOverlay) {
-    difficultyOverlay.addEventListener("click", function(e) {
+    difficultyOverlay.addEventListener("click", function (e) {
         e.stopPropagation();
     });
-    difficultyOverlay.addEventListener("touchstart", function(e) {
+    difficultyOverlay.addEventListener("touchstart", function (e) {
         e.stopPropagation();
     }, { passive: true });
 }
 
 diffBtns.forEach(btn => {
-    btn.addEventListener("click", function(e) {
+    btn.addEventListener("click", function (e) {
         e.stopPropagation();
         const diff = this.getAttribute("data-diff");
         setDifficulty(diff);
     });
-    btn.addEventListener("touchstart", function(e) {
+    btn.addEventListener("touchstart", function (e) {
         e.stopPropagation();
         const diff = this.getAttribute("data-diff");
         setDifficulty(diff);
@@ -993,6 +1083,7 @@ window.addEventListener("keydown", function (e) {
 
     if (e.code === "KeyR") {
         if (gameState === STATE_GAMEOVER || gameState === STATE_PAUSED) {
+            if (gameOverCooldown > 0) return;
             resetGame();
             gameState = STATE_PLAYING;
         }
