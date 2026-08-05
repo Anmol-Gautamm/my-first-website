@@ -47,6 +47,7 @@ my-first-website/
 ├── style.css        # Arcade styling, responsive layout & custom fonts
 ├── script.js        # Game loop, canvas renderer, physics & controls
 ├── images/          # Game sprites & graphical assets
+├── LICENSE          # MIT License
 └── README.md        # Documentation
 ```
 
@@ -80,3 +81,10 @@ my-first-website/
 
 Developed by **Anmol Gautam**  
 - GitHub: [@Anmol-Gautamm](https://github.com/Anmol-Gautamm)
+
+---
+
+## 📜 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
