@@ -853,11 +853,19 @@ function drawGameOverScreen() {
         ctx.fillText("NEW BEST!", cardX + 120, cardY + 180);
     }
 
+    const diff = DIFFICULTY_CONFIG[currentDifficulty];
+    ctx.textAlign = "center";
+    ctx.font = "700 13px 'Outfit', sans-serif";
+    ctx.fillStyle = "#64748b";
+    ctx.fillText("MODE: ", canvas.width / 2 - 25, cardY + 205);
+    ctx.fillStyle = diff.color;
+    ctx.fillText(diff.name, canvas.width / 2 + 25, cardY + 205);
+
     const pulse = 0.5 + Math.sin(Date.now() * 0.008) * 0.5;
     ctx.textAlign = "center";
     ctx.fillStyle = `rgba(15, 23, 42, ${pulse})`;
     ctx.font = "700 16px 'Outfit', sans-serif";
-    ctx.fillText("Tap or Press R to Restart", canvas.width / 2, cardY + 240);
+    ctx.fillText("Tap or Press R to Restart", canvas.width / 2, cardY + 248);
 
     ctx.restore();
 }
@@ -865,7 +873,7 @@ function drawGameOverScreen() {
 // --- MAIN GAME LOOP ---
 function gameLoop() {
     // Show/Hide HTML Difficulty Selector overlay based on game state
-    if (gameState === STATE_MENU) {
+    if (gameState === STATE_MENU || gameState === STATE_GAMEOVER) {
         difficultyOverlay.classList.remove("hidden");
     } else {
         difficultyOverlay.classList.add("hidden");
@@ -937,7 +945,16 @@ function gameLoop() {
 
 // --- INPUT & EVENT LISTENERS ---
 
-// Attach Difficulty Button Listeners
+// Attach Difficulty Button & Overlay Listeners
+if (difficultyOverlay) {
+    difficultyOverlay.addEventListener("click", function(e) {
+        e.stopPropagation();
+    });
+    difficultyOverlay.addEventListener("touchstart", function(e) {
+        e.stopPropagation();
+    }, { passive: true });
+}
+
 diffBtns.forEach(btn => {
     btn.addEventListener("click", function(e) {
         e.stopPropagation();
@@ -953,7 +970,7 @@ diffBtns.forEach(btn => {
 
 function handlePointer(e) {
     if (e.target === soundToggleBtn || e.target === pauseBtn) return;
-    if (e.target.classList.contains("diff-btn")) return;
+    if (e.target.classList.contains("diff-btn") || e.target.closest("#difficultyOverlay")) return;
     flap();
 }
 
@@ -963,7 +980,7 @@ window.addEventListener("keydown", function (e) {
         flap();
     }
 
-    if (gameState === STATE_MENU) {
+    if (gameState === STATE_MENU || gameState === STATE_GAMEOVER) {
         if (e.code === "Digit1" || e.code === "Numpad1") { setDifficulty('EASY'); }
         if (e.code === "Digit2" || e.code === "Numpad2") { setDifficulty('NORMAL'); }
         if (e.code === "Digit3" || e.code === "Numpad3") { setDifficulty('HARD'); }
