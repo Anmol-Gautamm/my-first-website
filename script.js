@@ -425,7 +425,7 @@ function updatePipes() {
                 createParticles(birdX, birdY, "#00f0ff", 20, 2);
                 p.passed = true;
             } else {
-                triggerGameOver();
+                
                 return;
             }
         }
