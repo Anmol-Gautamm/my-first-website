@@ -21,8 +21,8 @@ const DIFFICULTY_CONFIG = {
         baseSpeed: 1.9,
         baseGap: 180,
         minGap: 155,
-        gravity: 0.41,
-        flapStrength: -7.2,
+        gravity: 0.36,
+        flapStrength: -6.8,
         movingPipeChance: 0, // No moving pipes
         movingAmplitude: 0
     },
@@ -32,8 +32,8 @@ const DIFFICULTY_CONFIG = {
         baseSpeed: 2.4,
         baseGap: 160,
         minGap: 135,
-        gravity: 0.45,
-        flapStrength: -7.5,
+        gravity: 0.39,
+        flapStrength: -7.1,
         movingPipeChance: 0.35, // 35% chance after score 3
         movingAmplitude: 45
     },
@@ -43,8 +43,8 @@ const DIFFICULTY_CONFIG = {
         baseSpeed: 2.9,
         baseGap: 140,
         minGap: 115,
-        gravity: 0.48,
-        flapStrength: -7.8,
+        gravity: 0.42,
+        flapStrength: -7.4,
         movingPipeChance: 0.70, // 70% chance after score 2
         movingAmplitude: 65
     }
@@ -210,6 +210,7 @@ let wingTimer = 0;
 
 // --- POWER-UP ACTIVE TIMERS ---
 let hasShield = false;
+let invulnerableTime = 0;
 let slowMoTime = 0;
 let doubleScoreTime = 0;
 
@@ -334,6 +335,7 @@ function resetGame() {
     score = 0;
     isNewHighScore = false;
     hasShield = false;
+    invulnerableTime = 0;
     slowMoTime = 0;
     doubleScoreTime = 0;
     shakeTime = 0;
@@ -422,11 +424,14 @@ function updatePipes() {
         }
 
         if (checkPipeCollision(p)) {
-            if (hasShield) {
+            if (invulnerableTime > 0) {
+                // Ignore pipe collision during shield break grace period
+            } else if (hasShield) {
                 hasShield = false;
+                invulnerableTime = 65; // ~1.1 seconds of invulnerability grace period to clear pipe
                 shakeTime = 15;
                 playShieldBreakSound();
-                createParticles(birdX, birdY, "#00f0ff", 20, 2);
+                createParticles(birdX, birdY, "#00f0ff", 25, 2.5);
                 p.passed = true;
             } else {
                 triggerGameOver();
@@ -642,6 +647,11 @@ function drawPowerupItem(x, y, type) {
 function drawBird() {
     ctx.save();
     ctx.translate(birdX, birdY);
+
+    // Flashing visual feedback during post-shield invulnerability
+    if (invulnerableTime > 0) {
+        ctx.globalAlpha = (Math.floor(invulnerableTime / 5) % 2 === 0) ? 0.35 : 1.0;
+    }
 
     birdAngle = Math.max(-0.45, Math.min(1.25, velocity * 0.085));
     ctx.rotate(birdAngle);
@@ -988,6 +998,7 @@ function gameLoop() {
 
         if (slowMoTime > 0) slowMoTime--;
         if (doubleScoreTime > 0) doubleScoreTime--;
+        if (invulnerableTime > 0) invulnerableTime--;
 
         velocity += config.gravity;
         birdY += velocity;
